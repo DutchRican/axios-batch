@@ -1,0 +1,25 @@
+{
+  "name": "axios_batch",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./bin/index.js",
+  "scripts": {
+    "start-dev": "ts-node ./lib/index.ts",
+    "build": "tsc",
+    "start": "node ./bin"
+  },
+  "keywords": [],
+  "author": "Paul van Woensel",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "axios-retry": "^3.1.9",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.22",
+    "@types/uuid": "^8.3.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3"
+  }
+}
