@@ -28,7 +28,7 @@ describe('AxiosBatch', () => {
         const res = await ab.axiosBatch({ urls: requests, parallelRequests: 1, batchDelayInMs: 150 });
         const runtime = new Date().getTime() - startTime;
         // delay is 150 per batch, 3 tries means at the least 450ms delay
-        expect(runtime).toBeGreaterThan(460);
+        expect(runtime).toBeGreaterThan(450);
         expect(res).toEqual({allSuccess: [{data: {id: 'test', name:'test'}, id:"id-1"}, {data: {id: 'test', name: 'test'}, id:"id-2"}], allErrors: [{error: 404, id: 'id-0'}]});
     });
 
