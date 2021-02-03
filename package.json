@@ -1,8 +1,13 @@
 {
   "name": "axios-batch",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.5",
+  "description": "Axios batch calls, with return object for tracking",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DutchRican/axios-batch.git"
+  },
   "main": "./bin/index.js",
+  "preferGlobal": false,
   "scripts": {
     "start-dev": "ts-node ./lib/index.ts",
     "build": "tsc",
@@ -10,7 +15,7 @@
     "test": "jest",
     "test:ci": "jest --coverage && cat coverage/lcov.info | coveralls"
   },
-  "keywords": [],
+  "keywords": ["axios", "parallel", "retry", "batch", "requests"],
   "author": "Paul van Woensel",
   "license": "ISC",
   "dependencies": {
