@@ -10,6 +10,7 @@ export module Batch {
         client?: AxiosInstance;
         headers?: AxiosRequestConfig['headers'];
         baseURL?: AxiosRequestConfig['baseURL'];
+        backoffInterval?: number;
     }
 
     export interface BatchUrl {

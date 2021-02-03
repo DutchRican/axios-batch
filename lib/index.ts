@@ -5,23 +5,25 @@ import { Batch } from '../types';
 
 const retryCodes = [408, 500, 502, 504, 522, 524];
 
-export class AxiosBatch implements Batch.AxiosBatchConstructor {
+export class AxiosBatch {
     client: AxiosInstance;
     headers?: AxiosRequestConfig['headers'];
     baseURL?: AxiosRequestConfig['baseURL'];
+    backoffInterval: number;
 
     /**
      * 
      * @param {Batch.AxiosBatchConstructor} config 
      */
     constructor(config: Batch.AxiosBatchConstructor = {}) {
-        const {headers = {}, client, baseURL } = config;
+        const {headers = {}, client, baseURL, backoffInterval } = config;
         this.headers = headers;
         this.client = client || axios.create({ baseURL, headers });
+        this.backoffInterval = backoffInterval || 300;
         axiosRetry(this.client, {
             retries: 3,
             retryDelay: (retryCount: number) => {
-                return retryCount * 300; // interval for retries
+                return retryCount * this.backoffInterval; // interval for retries
             },
             retryCondition: (error: AxiosError) => {
                 const status = error?.response?.status || 500;

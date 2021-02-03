@@ -6,7 +6,8 @@
   "scripts": {
     "start-dev": "ts-node ./lib/index.ts",
     "build": "tsc",
-    "start": "node ./bin"
+    "start": "node ./bin",
+    "test": "jest"
   },
   "keywords": [],
   "author": "Paul van Woensel",
@@ -20,6 +21,9 @@
     "@types/node": "^14.14.22",
     "@types/uuid": "^8.3.0",
     "axios-mock": "^1.0.1",
+    "axios-mock-adapter": "^1.19.0",
+    "jest": "^26.6.3",
+    "ts-jest": "^26.5.0",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3"
   },
