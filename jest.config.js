@@ -4,12 +4,12 @@ module.exports = {
   },
   "moduleFileExtensions": ["ts", "tsx", "js"],
   "collectCoverageFrom": [
-    "**/lib/**/*.{ts}",
+    "lib/**/*.ts",
     "!**/node_modules/**",
     "!**/vendor/**"
   ],
   collectCoverage: true,
   coverageDirectory: "coverage",
-  coverageProvider: "v8",
+  coverageReporters: ['json', "lcov"],
   testEnvironment: "node",
 };
