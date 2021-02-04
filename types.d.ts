@@ -11,6 +11,8 @@ export module Batch {
         headers?: AxiosRequestConfig['headers'];
         baseURL?: AxiosRequestConfig['baseURL'];
         backoffInterval?: number;
+        degradationMax?: number;
+        isDegradationSafety?: boolean;
     }
 
     export interface BatchUrl {
