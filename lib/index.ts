@@ -1,8 +1,8 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
 import axiosRetry from 'axios-retry';
-import { v4 } from 'uuid';
 import { URL } from 'url';
 import { Batch } from '../types';
+import { checkHostIntegrity, hasValidBaseURL, makeBatchUrl, waitFor } from './utils';
 
 const retryCodes = [408, 500, 502, 504, 522, 524];
 
@@ -41,31 +41,7 @@ export class AxiosBatch {
             }
         });
     }
-    /**
-     * 
-     * @param <number> ms number in ms for the timeout between batches
-     */
-    private waitFor = (ms: number) => new Promise(r => setTimeout(r, ms));
-
-    private makeBatchUrl = (urls: Batch.BatchUrl[] | string[]): Batch.BatchUrl[] => {
-        let cleanBatch = (urls as any).map((item: Batch.BatchUrl | string) => {
-            let id;
-            let url;
-            let method = 'get';
-            let data;
-            if (typeof item === 'string') {
-                id = v4();
-                url = item;
-            } else {
-                id = item.id;
-                url = item.url;
-                method = item.method || method;
-                data = item.data;
-            }
-            return { id, url, method, data };
-        });
-        return cleanBatch;
-    }
+    
 
     private getBatchResults = async (batch: Batch.BatchUrl[], headers: Headers, verbose?: boolean): Promise<Batch.BatchResult> => {
         const results: Batch.BatchSuccess[] = [];
@@ -117,28 +93,22 @@ export class AxiosBatch {
         let start = 0;
         this.degradationChecks = {};
 
-        const urlBatch: Batch.BatchUrl[] = this.makeBatchUrl(urls);
+        const urlBatch: Batch.BatchUrl[] = makeBatchUrl(urls);
+        if (!hasValidBaseURL(this.baseURL, urlBatch)) throw new Error('Provide either a baseURL or fully qualified urls');
+        
         const batchesCount = Math.ceil(urlBatch.length / parallelRequests);
 
         for (let idx = 0; idx < batchesCount; idx++) {
-            if (this.checkHostIntegrity()) return { allSuccess, allErrors: [...allErrors, {id: 'warning', message: 'too many errors from server'}] };
+            if (this.isDegradationSafety && checkHostIntegrity(this.degradationChecks, this.degradationMax)) {
+                return { allSuccess, allErrors: [...allErrors, { id: 'warning', message: 'too many errors from server' }] };
+            }
             const processingBatch = urlBatch.slice(start, start + parallelRequests);
             start += parallelRequests;
             const { results, errors }: Batch.BatchResult = await this.getBatchResults(processingBatch, headers, verbose);
             allSuccess.push(...results);
             allErrors.push(...errors);
-            await this.waitFor(batchDelayInMs);
+            await waitFor(batchDelayInMs);
         }
         return { allSuccess, allErrors }
-    };
-
-    checkHostIntegrity = (): boolean => {
-        let shouldStop = false;
-        for (let item in this.degradationChecks) {
-            if (this.degradationChecks[item] >= this.degradationMax) {
-                shouldStop = true;
-            }
-        }
-        return shouldStop;
-    }
+    };  
 }

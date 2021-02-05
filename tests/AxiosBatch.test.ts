@@ -86,7 +86,18 @@ describe('AxiosBatch', () => {
         expect(runtime).toBeGreaterThan(800);
     });
    
-    it('should return partial object upon degradation detection', async () => {
+    it('should return partial object upon degradation detection when turned on', async () => {
+        mock.onGet(new RegExp(`${baseURL}/posts/[1-2]`)).reply(200, { id: 'test', name: 'test' });
+        mock.onGet(new RegExp(`${baseURL}/posts/[3-9 10 11]`)).reply(500);
+
+        const ab = new AxiosBatch({backoffInterval: 1, baseURL, isDegradationSafety: true });
+        const urls = createUrls(10);
+        const {allErrors, allSuccess} = await ab.axiosBatch({ urls, parallelRequests: 3 });
+        expect(allSuccess.length).toEqual(2);
+        expect(allErrors[allErrors.length -1].id).toEqual('warning');
+    });
+    
+    it('should not care about degradation detection when turned off', async () => {
         mock.onGet(new RegExp(`${baseURL}/posts/[1-2]`)).reply(200, { id: 'test', name: 'test' });
         mock.onGet(new RegExp(`${baseURL}/posts/[3-9 10 11]`)).reply(500);
 
@@ -94,7 +105,20 @@ describe('AxiosBatch', () => {
         const urls = createUrls(10);
         const {allErrors, allSuccess} = await ab.axiosBatch({ urls, parallelRequests: 3 });
         expect(allSuccess.length).toEqual(2);
-        expect(allErrors[allErrors.length -1].id).toEqual('warning');
+        expect(allErrors.length).toEqual(8);
+        expect(allErrors[allErrors.length -1].id).not.toEqual('warning');
+    });
+
+    it('should reject missing baseURL', async () => {
+
+        const ab = new AxiosBatch({backoffInterval: 1 });
+        const urls = createUrls(1);
+        expect.assertions(1);
+        try {
+            await ab.axiosBatch({ urls });
+        } catch (err) {
+            expect(err.message).toEqual('Provide either a baseURL or fully qualified urls');
+        }
     });
 
 });
