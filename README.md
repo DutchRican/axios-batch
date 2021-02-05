@@ -51,6 +51,25 @@ If a requests receives a status code of `[408, 500, 502, 504, 522 or 524]` upto 
 
 ### Options
 
-AxiosBatch can be instantiated with a client, headers, baseURL and backoffIntervall ( default is 300 ms)  
+AxiosBatch Class parameters:  
+| Name                | Optional | default Value          |
+|---------------------|----------|------------------------|
+| client              | yes      | new axios instance     |
+| headers             | yes      | empty object           |
+| baseURL             | yes      | undefined              |
+| backoffInterval     | yes      | 300 ms                 |
+| degradationMax      | yes      | 6 consecutive failures |
+| isDegradationSafety | yes      | false                  |
 
-The actual `axiosBatch` call takes the urls, parallelRequests ( default is 5), batchDelayInMs ( default is 250 ms ), headers, verbose ( default is false)
+<hr />
+
+axiosBatch function parameters
+| Name             |  Optional | default Value |
+|------------------|-----------|---------------|
+| urls             | no        | none          |
+| parallelRequests | yes       | 5             |
+| batchDelayInMs   | yes       | 250ms         |
+| headers          | yes       | empty object  |
+| verbose          | yes       | false         |
+
+
