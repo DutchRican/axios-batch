@@ -56,8 +56,7 @@ export class AxiosBatch {
                     headers,
                     data,
                     batchID
-
-                } as Batch.BatchConfig)
+                } as unknown as Batch.BatchConfig)
                     .catch((err: AxiosError) => {
                         verbose && console.log(`[info]:: request for ${batchID} failed with ${err?.response?.status || 500}`);
                         this.degradationChecks[hostname] = ++this.degradationChecks[hostname] || 0;
