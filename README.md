@@ -73,3 +73,14 @@ axiosBatch function parameters
 | verbose          | yes       | false         |
 
 
+-----
+### issues
+
+### using Create-React-App  
+
+`npm i url` and adding a polyfill to either your webpack.config.js or react-app-rewired will fix *Can't resolve 'url' in ..* errors
+```
+fallback: {
+        "url": require.resolve("url/")
+      },
+```

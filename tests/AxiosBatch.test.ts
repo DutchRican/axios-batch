@@ -120,5 +120,4 @@ describe('AxiosBatch', () => {
             expect(err.message).toEqual('Provide either a baseURL or fully qualified urls');
         }
     });
-
 });
